@@ -6,6 +6,7 @@ class MiniReader:
     def __init__(self, url):
         self.request = Request(url)
         self._get_page()
+        self._save_to_file()
 
     def _get_page(self):
         try:
@@ -19,4 +20,8 @@ class MiniReader:
         except HTTPError as err:
             self.code = err.code
             self.page = err.reason
+
+    def _save_to_file(self):
+        with open('1.txt', 'w', encoding=self.charset) as file:
+            file.write(self.page)
 
