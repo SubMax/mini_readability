@@ -31,7 +31,6 @@ class MiniReader:
         self.path = path.join(self.BASE_DIR, self.path)
         if not path.exists(self.path):
             makedirs(self.path)
-        self.path = path.join(self.path, self.file_name)
-        with open(self.path, 'w', encoding=self.charset) as file:
+        with open(path.join(self.path, self.file_name), 'w', encoding=self.charset) as file:
             file.write(self.page)
 
