@@ -1,5 +1,6 @@
 from urllib.request import Request, urlopen
 from urllib.error import HTTPError, URLError
+from os import path, makedirs
 
 
 class MiniReader:
@@ -22,6 +23,15 @@ class MiniReader:
             self.page = err.reason
 
     def _save_to_file(self):
-        with open('1.txt', 'w', encoding=self.charset) as file:
+        self.BASE_DIR, _ = path.split(path.abspath(__file__))
+        self.path, self.file_name = path.split(path.normpath(self.request.selector))
+        self.file_name, _ = path.splitext(self.file_name)
+        self.file_name += '.txt'
+        self.path = self.request.host + self.path
+        self.path = path.join(self.BASE_DIR, self.path)
+        if not path.exists(self.path):
+            makedirs(self.path)
+        self.path = path.join(self.path, self.file_name)
+        with open(self.path, 'w', encoding=self.charset) as file:
             file.write(self.page)
 
