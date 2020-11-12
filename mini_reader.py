@@ -4,21 +4,32 @@ from urllib.error import HTTPError, URLError
 from os import path, makedirs
 from html.parser import HTMLParser
 
-ATTRIBUTE_NAME_DICT = {
-    # 'http://schema.org/NewsArticle',
-    # 'http://schema.org/Article',
+ATTR_NAME_DICT = {
     'itemprop': {
         'articleBody': 'articleBody',
         'headline': 'headline',
+        'description': 'description',
+        'alternativeHeadline': 'alternativeHeadline',
     },
 }
-TAG_DICT = {
-    'div': 'div',
+ATTR_SCHEME_DICT = {
+    'itemtype': {
+        'http://schema.org/NewsArticle': 'http://schema.org/NewsArticle',
+        'http://schema.org/Article': 'http://schema.org/Article',
+    }
+}
+
+TEXT_TAG_DICT = {
     'h1': 'h1',
     'p': 'p',
     'a': 'a',
+    # 'div': 'div',
+    # 'span': 'span',
+}
+
+TAG_DICT = {
+    'div': 'div',
     'article': 'article',
-    'span': 'span'
 }
 
 
@@ -33,26 +44,26 @@ class ExtractorText(HTMLParser, ABC):
         super(ExtractorText, self).__init__()
 
     def handle_starttag(self, tag, attrs):
-        if TAG_DICT.get(tag, False) and not self.is_news:
-            for attr in attrs:
-                if ATTRIBUTE_NAME_DICT.get(attr[0], False):
-                    attribute_name = ATTRIBUTE_NAME_DICT.get(attr[0], False)
-                    if attribute_name.get(attr[1], False):
-                        self.is_news = True
-                        print(tag, attrs)
+        for attr in attrs:
+            if ATTR_SCHEME_DICT.get(attr[0], False):
+                scheme = ATTR_SCHEME_DICT.get(attr[0])
+                if scheme.get(attr[1], False):
+                    self.is_news = True
+                    self.list_tegs.append(tag)
+                    print(self.getpos())
+
         if self.is_news:
-            if TAG_DICT.get(tag, False):
+            if TEXT_TAG_DICT.get(tag, False):
                 self.is_text = True
                 self.list_tegs.append(tag)
-                print(tag)
-            if tag == 'a':
+                print(tag, attrs)
                 for attr in attrs:
                     if attr[0] == 'href':
                         self.cur_link = attr[1]
 
     def handle_endtag(self, tag):
         if self.is_news:
-            if TAG_DICT.get(tag, False):
+            if TEXT_TAG_DICT.get(tag, False):
                 self.list_tegs.pop()
                 print(tag)
         if self.is_news == True and len(self.list_tegs) == 0:
@@ -61,18 +72,35 @@ class ExtractorText(HTMLParser, ABC):
 
     def handle_data(self, data):
         if self.is_text:
-            if TAG_DICT.get(self.list_tegs[-1], False):
+            if TEXT_TAG_DICT.get(self.list_tegs[-1], False):
                 if self.list_tegs[-1] == 'a':
                     self.text += data + f' [{self.cur_link}] '
                 else:
-                    self.text += data + '\n'
+                    self.text += data + f' <{self.list_tegs[-1]}> '
                     self.is_text = False
                 print(data)
 
     def feed(self, data):
         super(ExtractorText, self).feed(data)
-        print(self.text)
+        self.format_text()
         return self.text
+
+    def format_text(self):
+        line = ''
+        output_text = ''
+        for word in self.text.split():
+            if TEXT_TAG_DICT.get(word[1:-1], False) and TEXT_TAG_DICT.get(word[1:-1], False) != 'a':
+                line += '\n\n'
+                output_text += line
+                line = ''
+            else:
+                if len(line + word) > 80:
+                    line += '\n'
+                    output_text += line
+                    line = ''
+                else:
+                    line += word + ' '
+        self.text = output_text
 
 
 class MiniReader:
