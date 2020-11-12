@@ -10,4 +10,3 @@ if __name__ == '__main__':
             break
         else:
             mr = MiniReader(url=url)
-            print(mr.page)
