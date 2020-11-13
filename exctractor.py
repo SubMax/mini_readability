@@ -1,6 +1,7 @@
 from html.parser import HTMLParser
 from abc import ABC
-from settings import ATTR_SCHEME_DICT, TEXT_TAG_DICT, LINK_TAG_DICT, FILTERS_CONTAINS, FILTERS_MATCH, FILTERS_CONTAINS_DATA
+from settings import TEXT_TAG_DICT, LINK_TAG_DICT, FILTERS_CONTAINS, FILTERS_MATCH, FILTERS_CONTAINS_DATA, \
+    ATTR_NAME_DICT
 import re
 
 
@@ -52,8 +53,6 @@ class ExtractorText(HTMLParser, ABC):
                 for door in self.doors[::-1]:
                     if door.tag == tag and door.is_open:
                         door.is_open = False
-                        # if not LINK_TAG_DICT.get(door.tag, False):
-                        #     door.add_data(f'{tag}')
                         break
         self._is_the_end()
 
@@ -85,8 +84,8 @@ class ExtractorText(HTMLParser, ABC):
         :return:
         """
         for attr in attrs:
-            if ATTR_SCHEME_DICT.get(attr[0], False):
-                scheme = ATTR_SCHEME_DICT.get(attr[0])
+            if ATTR_NAME_DICT.get(attr[0], False):
+                scheme = ATTR_NAME_DICT.get(attr[0])
                 if scheme.get(attr[1], False):
                     self.is_news = True
 
