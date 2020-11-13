@@ -22,6 +22,10 @@ TEXT_TAG_DICT = {
     # 'span': 'span',
 }
 
+LINK_TAG_DICT = {
+    'a': 'a',
+}
+
 TAG_DICT = {
     'div': 'div',
     'article': 'article',
