@@ -1,6 +1,7 @@
 from html.parser import HTMLParser
 from abc import ABC
-from settings import ATTR_SCHEME_DICT, TEXT_TAG_DICT, LINK_TAG_DICT, FILTERS_CONTAINS, FILTERS_MATCH
+from settings import ATTR_SCHEME_DICT, TEXT_TAG_DICT, LINK_TAG_DICT, FILTERS_CONTAINS, FILTERS_MATCH, FILTERS_CONTAINS_DATA
+import re
 
 
 class Door:
@@ -119,22 +120,25 @@ class ExtractorText(HTMLParser, ABC):
                         return False
             return True
 
+        def contains_data(door):
+            for fltr in FILTERS_CONTAINS_DATA:
+                if fltr in door.data:
+                    return False
+            return True
+
         self.doors = list(filter(contains, self.doors))
         self.doors = list(filter(match, self.doors))
+        self.doors = list(filter(contains_data, self.doors))
 
     def _format_text(self):
-        line = ''
         output_text = ''
-        for word in self.text.split():
-            if TEXT_TAG_DICT.get(word[1:-1], False) and TEXT_TAG_DICT.get(word[1:-1], False) != 'a':
-                line += '\n\n'
-                output_text += line
-                line = ''
+        link = ''
+        for door in self.doors:
+            if LINK_TAG_DICT.get(door.tag, False):
+                for attr in door.attrs:
+                    if attr[0] == 'href':
+                        link = attr[1]
+                output_text = re.sub(r'\{link\}', f'{door.data} [{link}]', output_text, 1)
             else:
-                if len(line + word) > 80:
-                    line += '\n'
-                    output_text += line
-                    line = ''
-                else:
-                    line += word + ' '
+                output_text += door.data + '\n\n'
         self.text = output_text
