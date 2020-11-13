@@ -1,4 +1,3 @@
-
 ATTR_NAME_DICT = {
     'itemprop': {
         'articleBody': 'articleBody',
@@ -29,4 +28,21 @@ LINK_TAG_DICT = {
 TAG_DICT = {
     'div': 'div',
     'article': 'article',
+}
+
+FILTERS_CONTAINS = {
+    'class': (
+        'favorite',
+        'b-box',
+        'dark',
+        'social',
+        'video',
+    )
+}
+
+FILTERS_MATCH = {
+    'class': (
+        'title',
+        'item'
+    )
 }
