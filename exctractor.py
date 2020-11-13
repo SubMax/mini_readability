@@ -1,6 +1,6 @@
 from html.parser import HTMLParser
 from abc import ABC
-from settings import ATTR_SCHEME_DICT, TEXT_TAG_DICT, LINK_TAG_DICT
+from settings import ATTR_SCHEME_DICT, TEXT_TAG_DICT, LINK_TAG_DICT, FILTERS_CONTAINS, FILTERS_MATCH
 
 
 class Door:
@@ -99,11 +99,28 @@ class ExtractorText(HTMLParser, ABC):
             self.is_text = False
 
     def _filter_door(self):
-        new_doors = []
-        for door in self.doors:
-            if not door.data == '':
-                new_doors.append(door)
-        self.doors = new_doors
+        self.doors = list(filter(lambda door: door.data != '', self.doors))
+
+        def contains(door):
+            for attr in door.attrs:
+                name_attr = attr[0]
+                value = attr[1]
+                for fltr in FILTERS_CONTAINS.get(name_attr, []):
+                    if fltr in value:
+                        return False
+            return True
+
+        def match(door):
+            for attr in door.attrs:
+                name_attr = attr[0]
+                value = attr[1]
+                for fltr in FILTERS_MATCH.get(name_attr, []):
+                    if fltr == value:
+                        return False
+            return True
+
+        self.doors = list(filter(contains, self.doors))
+        self.doors = list(filter(match, self.doors))
 
     def _format_text(self):
         line = ''
