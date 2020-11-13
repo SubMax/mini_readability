@@ -10,6 +10,7 @@ ATTR_SCHEME_DICT = {
     'itemtype': {
         'http://schema.org/NewsArticle': 'http://schema.org/NewsArticle',
         'http://schema.org/Article': 'http://schema.org/Article',
+        'https://schema.org/Article': 'https://schema.org/Article',
     }
 }
 
@@ -18,17 +19,20 @@ TEXT_TAG_DICT = {
     'p': 'p',
     'a': 'a',
     'div': 'div',
-    # 'span': 'span',
+    'span': 'span',
+    'div': 'div',
+    'article': 'article'
 }
 
 LINK_TAG_DICT = {
     'a': 'a',
+    'span': 'span',
 }
 
-TAG_DICT = {
-    'div': 'div',
-    'article': 'article',
-}
+# TAG_DICT = {
+#     'div': 'div',
+#     'article': 'article',
+# }
 
 FILTERS_CONTAINS = {
     'class': (
@@ -46,3 +50,11 @@ FILTERS_MATCH = {
         'item'
     )
 }
+
+FILTERS_CONTAINS_DATA = (
+    'window._',
+    'window[',
+    'if',
+    ': "',
+    # '.on',
+)
