@@ -72,6 +72,7 @@ class ExtractorText(HTMLParser, ABC):
 
     def feed(self, data):
         super(ExtractorText, self).feed(data)
+        self._filter_door()
         self._format_text()
         return self.text
 
@@ -96,6 +97,13 @@ class ExtractorText(HTMLParser, ABC):
         if self.is_news == True and len(self.tag_list) == 0:
             self.is_news = False
             self.is_text = False
+
+    def _filter_door(self):
+        new_doors = []
+        for door in self.doors:
+            if not door.data == '':
+                new_doors.append(door)
+        self.doors = new_doors
 
     def _format_text(self):
         line = ''
