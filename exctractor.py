@@ -133,6 +133,8 @@ class ExtractorText(HTMLParser, ABC):
     def _format_text(self):
         output_text = ''
         link = ''
+        new_text = ''
+
         for door in self.doors:
             if LINK_TAG_DICT.get(door.tag, False):
                 for attr in door.attrs:
@@ -141,4 +143,17 @@ class ExtractorText(HTMLParser, ABC):
                 output_text = re.sub(r'\{link\}', f'{door.data} [{link}]', output_text, 1)
             else:
                 output_text += door.data + '\n\n'
+
+        for paragraph in output_text.strip().split('\n'):
+            line_count = 0
+            new_line = '    '
+            for word in paragraph.strip().split():
+                if (len(new_line + word) + 1) // 80 > line_count:
+                    new_line += '\n' + word + ' '
+                    line_count += 1
+                else:
+                    new_line += word + ' '
+            new_text += new_line + '\n'
+
+        output_text = new_text
         self.text = output_text
