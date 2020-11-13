@@ -23,7 +23,7 @@ TEXT_TAG_DICT = {
     'h1': 'h1',
     'p': 'p',
     'a': 'a',
-    # 'div': 'div',
+    'div': 'div',
     # 'span': 'span',
 }
 
@@ -33,10 +33,24 @@ TAG_DICT = {
 }
 
 
+class Door:
+    def __init__(self, tag, attrs):
+        self.tag = tag
+        self.attrs = attrs
+        self.data = ''
+        self.is_open = True
+        self.is_opened = False
+
+    def add_data(self, data):
+        self.data += data
+        self.is_opened = True
+
+
 class ExtractorText(HTMLParser, ABC):
     def __init__(self):
         self.text = ''
         self.list_tegs = list()
+        self.doors = []
         self.target_tag = ''
         self.is_news = False
         self.is_text = False
@@ -49,14 +63,12 @@ class ExtractorText(HTMLParser, ABC):
                 scheme = ATTR_SCHEME_DICT.get(attr[0])
                 if scheme.get(attr[1], False):
                     self.is_news = True
-                    self.list_tegs.append(tag)
-                    print(self.getpos())
 
         if self.is_news:
             if TEXT_TAG_DICT.get(tag, False):
                 self.is_text = True
                 self.list_tegs.append(tag)
-                print(tag, attrs)
+                self.doors.append(Door(tag, attrs))
                 for attr in attrs:
                     if attr[0] == 'href':
                         self.cur_link = attr[1]
@@ -65,7 +77,10 @@ class ExtractorText(HTMLParser, ABC):
         if self.is_news:
             if TEXT_TAG_DICT.get(tag, False):
                 self.list_tegs.pop()
-                print(tag)
+                for door in self.doors[::-1]:
+                    if door.tag == tag and door.is_open:
+                        door.is_open = False
+                        break
         if self.is_news == True and len(self.list_tegs) == 0:
             self.is_news = False
             self.is_text = False
@@ -78,7 +93,10 @@ class ExtractorText(HTMLParser, ABC):
                 else:
                     self.text += data + f' <{self.list_tegs[-1]}> '
                     self.is_text = False
-                print(data)
+                for door in self.doors[::-1]:
+                    if door.is_open and door.tag == self.list_tegs[-1]:
+                        door.add_data(data)
+                        break
 
     def feed(self, data):
         super(ExtractorText, self).feed(data)
@@ -137,5 +155,37 @@ class MiniReader:
             file.write(self.page)
 
     def _extract_text(self):
+        self.page = """
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <title>Title</title>
+        </head>
+        <body>
+            <div class="b-topic_news hfohtqd b-topic" itemscope="" itemtype="http://schema.org/NewsArticle">
+                <h1 class="lrgld b-topic__title" itemprop="headline">В Чехии предупредили об&nbsp;угрозе третьей мировой войны</h1>
+                <div class="nqhr b-text js-topic__text clearfix" itemprop="articleBody">
+                    <p class="noaufwg">Военная разведка Чехии предупредила об угрозе третьей мировой войны. Об этом говорится в отчете ведомства за 2019 год, который был 
+                        <a href="https://www.vzcr.cz/uploads/41-Vyrocni-zprava-o-cinnosti-VZ-za-rok-2019.pdf" target="_blank" class="etxl">опубликован
+                        </a> 
+                    во вторник, 10 ноября.
+                    </p>
+                    <p class="bqwlhtt">Отмечается, что сейчас глобальный конфликт «находится на первой стадии». «Формируется мировоззрение тех, кто сможет и желает активно участвовать в нем [конфликте], и постепенно определяются технологические инструменты, с помощью которых им можно было бы управлять», — утверждают авторы доклада. По мнению аналитиков, возможной причиной конфликта является соперничество между США, Россией и Китаем.
+                    </p>
+                    <p class="gsxokvh">В документе также говорится о падении значимости международного права из-за отсутствия мирного диалога как способа разрешения противоречий. Авторы доклада подчеркивают, что росту напряженности способствует и манипулирование общественным сознанием.
+                    </p>
+                    <p class="utkrx">Ранее глава Штаба обороны Великобритании генерал 
+                        <a href="https://lenta.ru/tags/persons/karter-nik/" target="_blank" class="vgygo">Ник Картер
+                        </a> 
+                        <a href="https://lenta.ru/news/2020/11/08/wwthree/" target="_blank" class="funsk">заявил
+                        </a>
+                    , что глобальная политическая нестабильность и экономический кризис из-за пандемии коронавируса могут привести к третьей мировой войне. «Мы живем в то время, когда мир представляется очень беспокойным и нестабильным, — не говоря уже о ставшей привычной глобальной конкуренции между странами. Учитывая, как много локальных конфликтов разворачивается по всей планете, риск, что из-за чьих-то просчетов произойдет эскалация, довольно реален», — заявил Картер.
+                    </p>
+                </div>
+            </div>
+        </body>
+        </html>
+        """
         self.page = self.parser.feed(self.page)
         print()
