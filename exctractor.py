@@ -15,6 +15,9 @@ class Door:
         self.data += data
         self.is_opened = True
 
+    def __repr__(self):
+        return f'[{self.tag}, {self.attrs}, {self.data}]'
+
 
 class ExtractorText(HTMLParser, ABC):
     def __init__(self):
