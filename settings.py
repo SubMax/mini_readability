@@ -41,14 +41,25 @@ FILTERS_CONTAINS = {
         'dark',
         'social',
         'video',
-    )
+        'meta',
+    ),
+    'itemprop': (
+        'date',
+        'rating',
+        'Rating',
+        'name',
+        'Name',
+    ),
 }
 
 FILTERS_MATCH = {
     'class': (
         'title',
-        'item'
-    )
+        'item',
+    ),
+    'itemprop': (
+        'articleSection',
+    ),
 }
 
 FILTERS_CONTAINS_DATA = (
@@ -56,5 +67,5 @@ FILTERS_CONTAINS_DATA = (
     'window[',
     'if',
     ': "',
-    # '.on',
+    'meta',
 )
