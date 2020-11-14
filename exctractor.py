@@ -151,7 +151,6 @@ class ExtractorText(HTMLParser):
     def _format_text(self):
         """Сборка текста из экземпляров класса Door и форматирование"""
         output_text = ''
-        link = ''
         new_text = ''
 
         for door in self.doors:
@@ -163,17 +162,12 @@ class ExtractorText(HTMLParser):
             else:
                 output_text += door.data + '\n\n'
 
-        for paragraph in output_text.strip().split('\n'):
-            line_count = 0
-            new_line = '    '
-            for word in paragraph.strip().split():
-                print((len(new_line + word) + 1), (len(new_line + word) + 1) // 80)
-                if (len(new_line + word) + 1) // 80 > line_count:   # Ширина текста
-                    new_line += '\n' + word + ' '
-                    line_count += 1
-                else:
-                    new_line += word + ' '
-            new_text += new_line + '\n'
+        for line in output_text.splitlines(keepends=True):
+            line = '\t' + line
+            if not line == '\t\n':
+                result = re.findall(r'[^ ].{0,78}[\s.,!?]', line)
+                for new_line in result:
+                    new_text += new_line + '\n'
 
         output_text = new_text
         self.text = output_text
