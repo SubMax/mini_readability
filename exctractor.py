@@ -1,7 +1,6 @@
 from html.parser import HTMLParser
-from abc import ABC
 from settings import TEXT_TAG_DICT, LINK_TAG_DICT, FILTERS_CONTAINS, FILTERS_MATCH, FILTERS_CONTAINS_DATA, \
-    ATTR_NAME_DICT, FILTERS_MATCH_DATA
+    ATTR_NAME_DICT, FILTERS_MATCH_DATA, LINE_WIDTH
 import re
 
 
@@ -162,10 +161,11 @@ class ExtractorText(HTMLParser):
             else:
                 output_text += door.data + '\n\n'
 
+        fix_width = re.compile(r'[^ ].{0,%s}[\s,]' % LINE_WIDTH)  # Стрка вида '[^ ].{0,80}[\s,]'
         for line in output_text.splitlines(keepends=True):
             line = '\t' + line
             if not line == '\t\n':
-                result = re.findall(r'[^ ].{0,78}[\s,]', line)
+                result = fix_width.findall(line)
                 for new_line in result:
                     new_text += new_line + '\n'
 
