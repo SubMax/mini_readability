@@ -1,7 +1,7 @@
 from html.parser import HTMLParser
 from abc import ABC
 from settings import TEXT_TAG_DICT, LINK_TAG_DICT, FILTERS_CONTAINS, FILTERS_MATCH, FILTERS_CONTAINS_DATA, \
-    ATTR_NAME_DICT
+    ATTR_NAME_DICT, FILTERS_MATCH_DATA
 import re
 
 
@@ -65,7 +65,7 @@ class ExtractorText(HTMLParser):
     def handle_data(self, data):
         """Метод вызывается при появлении содержимого HTML тега"""
         if self.is_text:
-            last_add_tag = self.tag_list[-1]  # последний добавленный тег
+            last_add_tag = self.tag_list[-1]  # последний добавленный тег / текущий, обрабатываемый тег
             if TEXT_TAG_DICT.get(last_add_tag, False):  # Если тег текстовый
                 for door in self.doors[::-1]:
                     if door.is_open and door.tag == last_add_tag:
@@ -137,9 +137,16 @@ class ExtractorText(HTMLParser):
                     return False
             return True
 
+        def match_data(door):
+            for fltr in FILTERS_MATCH_DATA:
+                if fltr == door.data:
+                    return False
+            return True
+
         self.doors = list(filter(contains, self.doors))  # Применение фильтров
         self.doors = list(filter(match, self.doors))
         self.doors = list(filter(contains_data, self.doors))
+        self.doors = list(filter(match_data, self.doors))
 
     def _format_text(self):
         """Сборка текста из экземпляров класса Door и форматирование"""
@@ -152,7 +159,7 @@ class ExtractorText(HTMLParser):
                 for attr in door.attrs:
                     if attr[0] == 'href':
                         link = attr[1]
-                output_text = re.sub(r'\{link\}', f'{door.data} [{link}]', output_text, 1)
+                output_text = re.sub(r'\{link\}', f' {door.data} [{link}] ', output_text, 1)
             else:
                 output_text += door.data + '\n\n'
 
@@ -160,6 +167,7 @@ class ExtractorText(HTMLParser):
             line_count = 0
             new_line = '    '
             for word in paragraph.strip().split():
+                print((len(new_line + word) + 1), (len(new_line + word) + 1) // 80)
                 if (len(new_line + word) + 1) // 80 > line_count:   # Ширина текста
                     new_line += '\n' + word + ' '
                     line_count += 1

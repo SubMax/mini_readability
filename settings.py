@@ -6,13 +6,6 @@ ATTR_NAME_DICT = {
         'alternativeHeadline': 'alternativeHeadline',
     },
 }
-ATTR_SCHEME_DICT = {
-    'itemtype': {
-        'http://schema.org/NewsArticle': 'http://schema.org/NewsArticle',
-        'http://schema.org/Article': 'http://schema.org/Article',
-        'https://schema.org/Article': 'https://schema.org/Article',
-    }
-}
 
 TEXT_TAG_DICT = {
     'h1': 'h1',
@@ -26,22 +19,21 @@ TEXT_TAG_DICT = {
 
 LINK_TAG_DICT = {
     'a': 'a',
-    'span': 'span',
+    # 'span': 'span',
 }
-
-# TAG_DICT = {
-#     'div': 'div',
-#     'article': 'article',
-# }
 
 FILTERS_CONTAINS = {
     'class': (
         'favorite',
-        'b-box',
+        'box',
         'dark',
         'social',
         'video',
         'meta',
+        'count',
+        'credits',
+        'photo',
+        'media',
     ),
     'itemprop': (
         'date',
@@ -68,4 +60,8 @@ FILTERS_CONTAINS_DATA = (
     'if',
     ': "',
     'meta',
+)
+
+FILTERS_MATCH_DATA = (
+    'Реклама',
 )
