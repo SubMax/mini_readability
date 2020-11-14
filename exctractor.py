@@ -165,7 +165,7 @@ class ExtractorText(HTMLParser):
         for line in output_text.splitlines(keepends=True):
             line = '\t' + line
             if not line == '\t\n':
-                result = re.findall(r'[^ ].{0,78}[\s.,!?]', line)
+                result = re.findall(r'[^ ].{0,78}[\s,]', line)
                 for new_line in result:
                     new_text += new_line + '\n'
 
