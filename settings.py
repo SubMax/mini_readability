@@ -1,3 +1,5 @@
+LINE_WIDTH = 78
+
 ATTR_NAME_DICT = {
     'itemprop': {
         'articleBody': 'articleBody',
