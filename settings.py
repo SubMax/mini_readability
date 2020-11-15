@@ -1,4 +1,4 @@
-LINE_WIDTH = 78
+LINE_WIDTH = 79
 
 ATTR_NAME_DICT = {
     'itemprop': {
@@ -21,7 +21,6 @@ TEXT_TAG_DICT = {
 
 LINK_TAG_DICT = {
     'a': 'a',
-    # 'span': 'span',
 }
 
 FILTERS_CONTAINS = {

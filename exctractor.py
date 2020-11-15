@@ -106,8 +106,7 @@ class ExtractorText(HTMLParser):
             self.is_text = False
 
     def _filter_door(self):
-        """Метод для работы с экземплярами класса Door, описывающих HTML тег"""
-        self.doors = list(filter(lambda door: door.data != '', self.doors))
+        """Метод для работы со списком экземпляров класса Door, описывающих HTML теги"""
 
         def contains(door):
             """Определяет содержат ли атрибуты тега фильтры указанные в FILTERS_CONTAINS"""
@@ -137,18 +136,20 @@ class ExtractorText(HTMLParser):
             return True
 
         def match_data(door):
+            """Определяет совпадает ли содержимое тега фильтры указанные в FILTERS_MATCH_DATA"""
             for fltr in FILTERS_MATCH_DATA:
                 if fltr == door.data:
                     return False
             return True
 
+        self.doors = list(filter(lambda door: door.data != '', self.doors))  # фильтрует элементы списка с пустой data
         self.doors = list(filter(contains, self.doors))  # Применение фильтров
         self.doors = list(filter(match, self.doors))
         self.doors = list(filter(contains_data, self.doors))
         self.doors = list(filter(match_data, self.doors))
 
     def _format_text(self):
-        """Сборка текста из экземпляров класса Door и форматирование"""
+        """Сборка и форматирование текста из экземпляров класса Door"""
         output_text = ''
         new_text = ''
 

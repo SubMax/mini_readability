@@ -24,7 +24,7 @@ class MiniReader:
         try:
             with urlopen(self.request) as response:
                 self.code = response.code
-                self.context_type = response.headers.get('Content-Type')    # извлекакем charset из HTTP заголовка
+                self.context_type = response.headers.get('Content-Type')    # извлекаем charset из HTTP заголовка
                 if 'charset=' in self.context_type:
                     self.charset = self.context_type.split()[-1]
                     self.charset = self.charset.split('=')[-1]
