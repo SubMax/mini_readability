@@ -32,7 +32,7 @@ if __name__ == '__main__':
 ### mini_reader.py
 Класс MiniReader, отвечает за создание http запроса и выполнение его. Из полученного http
 ответа получаем html страницу, извлекаем полезную информацию и сохраняем ее в текстовый файл.
-####Метод \_\_init__
+#### Метод \_\_init__
 ```python
 def __init__(self, url):
     """
@@ -44,12 +44,12 @@ def __init__(self, url):
     self._extract_text()
     self._save_to_file()
 ```
-#####Создание http запроса
+##### Создание http запроса
 Создание запроса осуществляется с помощью класса 
 [`Request`](https://docs.python.org/3/library/urllib.request.html#urllib.request.Request) 
 модуля стандартной библиотеки 
 [`urllib.request`](https://docs.python.org/3/library/urllib.request.html#module-urllib.request).
-####Метод _get_page
+#### Метод _get_page
 ```python
 def _get_page(self):
     """Запрос страницы"""
@@ -65,12 +65,12 @@ def _get_page(self):
         self.code = err.code
         self.page = err.reason
 ```
-#####Запрос
+##### Запрос
 Выполнение запроса осуществляется с помощью метода 
 [`urlopen`](https://docs.python.org/3/library/urllib.request.html#urllib.request.urlopen) 
 модуля стандартной библиотеки 
 [`urllib.request`](https://docs.python.org/3/library/urllib.request.html#module-urllib.request).
-####Метод _save_to_file
+#### Метод _save_to_file
 ```python
 def _save_to_file(self):
     """Сохранение в файл. Путь формируется автоматически исходя из URL"""
@@ -85,7 +85,7 @@ def _save_to_file(self):
     with open(path.join(self.path, self.file_name), 'w', encoding=self.charset) as file:
         file.write(self.page)
 ```
-#####Сохранение в файл
+##### Сохранение в файл
 Сохранение в файл осуществляется с помощью встроеной функции 
 [`open`](https://docs.python.org/3/library/functions.html?highlight=open#open)
 Имя и путь выходного файла формируется автоматически по URL.
@@ -93,13 +93,13 @@ def _save_to_file(self):
 Введите url-адрес:https://lenta.ru/news/2020/11/14/lazer/
 Файл сохранен: [BASE_DIR]\lenta.ru\news\2020\11\14\lazer.txt
 ```
-####_extract_text
+#### _extract_text
 ```python
 def _extract_text(self):
     """Извлечение текста статьи из html страницы"""
     self.page = self.parser.feed(self.page)
 ```
-#####Извлечение текста статьи из html страницы
+##### Извлечение текста статьи из html страницы
 С помощью метода `feed` экземпляра класса ExtractorText, описанного в 
 [exctractor.py](https://github.com/SubMax/mini_readability/blob/master/exctractor.py), 
 извлекается полезная информация из html страницы.
@@ -126,7 +126,7 @@ class ExtractorText(HTMLParser):
 [`handle_data`](https://docs.python.org/3/library/html.parser.html#html.parser.HTMLParser.handle_data), 
 [`feed`](https://docs.python.org/3/library/html.parser.html#html.parser.HTMLParser.feed) 
 должны сохранять свою сигнатуру.
-####Метод feed
+#### Метод feed
 ```python
 def feed(self, data):
     """Метод класса HTMLParser. Дальнейшая обработка полученных данных"""
@@ -140,7 +140,7 @@ def feed(self, data):
 Затем запускаются методы фильтрации списка экземпляров класса `Door` и сборка текста из 
 оставшихся экземпляров класса `Door`. Это методы `_filter_door()` и `_format_text`, 
 соответственно.
-####Метод handle_starttag
+#### Метод handle_starttag
 ```python
 def handle_starttag(self, tag, attrs):
     """Метод вызывается при появлении открывающегося HTML тега"""
@@ -179,7 +179,7 @@ def _is_the_beginning(self, attrs):
 добавляем имя тега в список `tag_list.append(tag)`, используемый для определения закрытия 
 корневого тега с нужной нам текстовой информацией.
 Если тег ссылочный, сохраняем URL, храняшийся в атрибуте `href`.
-####Метод handle_endtag
+#### Метод handle_endtag
 ```python
 def handle_endtag(self, tag):
     """Метод вызывается при закрытии HTML тега"""
@@ -209,7 +209,7 @@ def _is_the_end(self):
         self.is_news = False
         self.is_text = False
 ```
-####Метод handle_data
+#### Метод handle_data
 ```python
 def handle_data(self, data):
     """Метод вызывается при появлении содержимого HTML тега"""
@@ -232,7 +232,7 @@ def handle_data(self, data):
 добавленного экземпляра с именем равным `tag` и флагом `is_open` равным `True` вызываем метод
 `add_data`. В качестве параметра метода `add_data`указываем содержимое HTML тега. Если тег 
 ссылочный, вызываем метод `add_data` с параметром `{link}`.
-####Метод _filter_door
+#### Метод _filter_door
 ```python
     self.doors = list(filter(lambda door: door.data != '', self.doors))  # фильтрует элементы списка с пустой data
     self.doors = list(filter(contains, self.doors))  # Применение фильтров
@@ -247,7 +247,7 @@ def handle_data(self, data):
 В качестве `function` последовательно передаем методы `contains`, `match`, `contains_data`, 
 `match_data` и еще одну анонимную функцию `lambda door: door.data != ''`. Это лямбда-функция возвращает 
 `False` для всех элементов, у которых `data` - пустая строка.
-####Метод contains
+#### Метод contains
 Определяет содержат ли атрибуты тега фильтры указанные в FILTERS_CONTAINS.
 ```python
     def contains(door):
@@ -260,7 +260,7 @@ def handle_data(self, data):
                     return False
         return True
 ```
-####Метод match
+#### Метод match
 Определяет совпадают ли атрибуты тега с фильтрами указанными в FILTERS_MATCH.
 ```python
     def match(door):
@@ -273,7 +273,7 @@ def handle_data(self, data):
                     return False
         return True
 ```
-####Метод contains_data
+#### Метод contains_data
 Определяет содержат ли содержимое тега фильтры указанные в FILTERS_CONTAINS_DATA.
 ```python
     def contains_data(door):
@@ -283,7 +283,7 @@ def handle_data(self, data):
                 return False
         return True
 ```
-####Метод match_data
+#### Метод match_data
 Определяет совпадает ли содержимое тега фильтры указанные в FILTERS_MATCH_DATA.
 ```python
     def match_data(door):
@@ -293,7 +293,7 @@ def handle_data(self, data):
                 return False
         return True
 ```
-####Метод _format_text
+#### Метод _format_text
 ```python
 def _format_text(self):
     """Сборка и форматирование текста из экземпляров класса Door"""
