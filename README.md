@@ -1,4 +1,16 @@
-# requirements.txt
+# Содержание
+1. [requirements](https://github.com/SubMax/mini_readability#requirementstxt)
+2. [mini_readability](https://github.com/SubMax/mini_readability#mini_readability)
+3. [Описание алгоритмов](https://github.com/SubMax/mini_readability#%D0%BE%D0%BF%D0%B8%D1%81%D0%B0%D0%BD%D0%B8%D0%B5-%D0%B0%D0%BB%D0%B3%D0%BE%D1%80%D0%B8%D1%82%D0%BC%D0%BE%D0%B2)
+   + [main.py](https://github.com/SubMax/mini_readability#mainpy)
+   + [mini_reader.py](https://github.com/SubMax/mini_readability#mini_readerpy)
+   + [exctractor.py](https://github.com/SubMax/mini_readability#exctractorpy)
+   + [settings.py](https://github.com/SubMax/mini_readability#settingspy)
+4. [Направление дальнейшего улучшения и развития программы](https://github.com/SubMax/mini_readability#%D0%BD%D0%B0%D0%BF%D1%80%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%B0%D0%BB%D1%8C%D0%BD%D0%B5%D0%B9%D1%88%D0%B5%D0%B3%D0%BE-%D1%83%D0%BB%D1%83%D1%87%D1%88%D0%B5%D0%BD%D0%B8%D1%8F-%D0%B8-%D1%80%D0%B0%D0%B7%D0%B2%D0%B8%D1%82%D0%B8%D1%8F-%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D1%8B)
+  
+  
+
+# requirements
 Работает только со стандартной библиотекой Python
 # mini_readability
 
